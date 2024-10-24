@@ -1,9 +1,6 @@
 package com.betek.ms_flies.model;
 
-import com.betek.ms_flies.model.modelEnum.Ciudades;
-import com.betek.ms_flies.model.modelEnum.Pais;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,9 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
-@Table(name = "AEROPUERTOS")
+@Table(name = "AEROPUERTO")
 @SequenceGenerator(name = "aeropueto_seq", sequenceName = "aeropuerto_sequence", allocationSize = 1)
 public class Aeropuerto {
 
@@ -22,17 +18,19 @@ public class Aeropuerto {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "aeropueto_seq")
     private int idAeropuerto;
 
-    @Column(name = "CODIGO_ATA")
-    private String codigoATA;
+    @Column(name = "CODIGO_IATA")
+    private String codigoIATA;
 
     @Column(name = "NOMBRE_AEROPUERTO")
     private String nombreAeropuerto;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "CIUDAD")
-    private Ciudades ciudad;
+    @OneToOne
+    @JoinColumn(name = "ID_LOCATION", referencedColumnName = "ID_LOCATION")
+    private Location location;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "PAIS")
-    private Pais pais;
+    public Aeropuerto(String codigoATA, String nombreAeropuerto, Location location) {
+        this.codigoIATA = codigoATA;
+        this.nombreAeropuerto = nombreAeropuerto;
+        this.location = location;
+    }
 }

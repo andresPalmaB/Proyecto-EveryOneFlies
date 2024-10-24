@@ -9,7 +9,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "AEROLINEA")
 @SequenceGenerator(name = "aerolinea_seq", sequenceName = "aerolinea_sequence", allocationSize = 1)
@@ -26,4 +25,8 @@ public class Aerolinea {
     @Column(name = "SIGLAS")
     private String siglas;
 
+    public Aerolinea(String nombre, String siglas) {
+        this.nombre = nombre;
+        this.siglas = siglas;
+    }
 }

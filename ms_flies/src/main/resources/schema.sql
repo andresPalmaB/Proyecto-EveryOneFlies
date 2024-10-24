@@ -1,0 +1,96 @@
+-- -----------------------------------------------------
+-- Schema dbProyecto_EveryOneFlies
+-- -----------------------------------------------------
+
+CREATE SCHEMA IF NOT EXISTS dbProyecto_EveryOneFlies;
+
+-- -----------------------------------------------------
+-- Table `AEROLINEA`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS dbProyecto_EveryOneFlies.AEROLINEA (
+  ID_AEROLINEA INT NOT NULL,
+  NOMBRE VARCHAR(15) NOT NULL,
+  SIGLAS VARCHAR(3) NOT NULL,
+  PRIMARY KEY (ID_AEROLINEA)
+);
+
+-- -----------------------------------------------------
+-- Table `LOCATION`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS dbProyecto_EveryOneFlies.LOCATION (
+  ID_LOCATION INT NOT NULL,
+  PAIS VARCHAR(15) NOT NULL,
+  CIUDAD VARCHAR(15) NOT NULL,
+  FECHA_INICIO_ALTA DATE NOT NULL,
+  FECHA_FIN_ALTA DATE NOT NULL,
+  FECHA_INICIO_MEDIA DATE NOT NULL,
+  FECHA_FIN_MEDIA DATE NOT NULL,
+  FECHA_INICIO_MEDIA_DOS DATE NOT NULL,
+  FECHA_FIN_MEDIA_DOS DATE NOT NULL,
+  PRECIO_BASE DOUBLE NOT NULL,
+  PRIMARY KEY (ID_LOCATION)
+);
+
+-- -----------------------------------------------------
+-- Table `AEROPUERTO`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS dbProyecto_EveryOneFlies.AEROPUERTO (
+  ID_AEROPUERTO INT NOT NULL,
+  CODIGO_IATA VARCHAR(3) NOT NULL,
+  NOMBRE_AEROPUERTO VARCHAR(20) NOT NULL,
+  ID_LOCATION INT NOT NULL,
+  PRIMARY KEY (ID_AEROPUERTO),
+  FOREIGN KEY (ID_LOCATION)
+    REFERENCES dbProyecto_EveryOneFlies.LOCATION(ID_LOCATION)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+);
+
+-- -----------------------------------------------------
+-- Table `VUELO`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS dbProyecto_EveryOneFlies.VUELO (
+  ID_VUELO INT NOT NULL,
+  CODIGO VARCHAR(5) NOT NULL,
+  ID_AEROLINEA INT NOT NULL,
+  ID_AEROPUERTO_ORIGEN INT NOT NULL,
+  ID_AEROPUERTO_DESTINO INT NOT NULL,
+  FECHA_SALIDA DATE NOT NULL,
+  HORA_SALIDA TIME NOT NULL,
+  FECHA_LLEGADA DATE NOT NULL,
+  HORA_LLEGADA TIME NOT NULL,
+  ECONOMICOS INT NOT NULL,
+  ECONOMICOS_PREMIUN INT NOT NULL,
+  BUSINESS INT NOT NULL,
+  PRIMERA_CLASE INT NOT NULL,
+  TOTAL_PUESTOS INT NOT NULL,
+  PRIMARY KEY (ID_VUELO),
+  FOREIGN KEY (ID_AEROLINEA)
+    REFERENCES dbProyecto_EveryOneFlies.AEROLINEA(ID_AEROLINEA)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  FOREIGN KEY (ID_AEROPUERTO_ORIGEN)
+    REFERENCES dbProyecto_EveryOneFlies.AEROPUERTO(ID_AEROPUERTO)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  FOREIGN KEY (ID_AEROPUERTO_DESTINO)
+    REFERENCES dbProyecto_EveryOneFlies.AEROPUERTO(ID_AEROPUERTO)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+);
+
+-- -----------------------------------------------------
+-- Table `ASIENTO`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS dbProyecto_EveryOneFlies.ASIENTO (
+  ID_ASIENTO INT NOT NULL,
+  ID_VUELO INT NOT NULL,
+  DISPONIBILIDAD TINYINT NOT NULL,
+  TIPO_ASIENTO VARCHAR(20) CHECK (TIPO_ASIENTO IN ('ECONOMICO', 'ECONOMICOPREMIUN', 'BUSINESS', 'PRIMERACLASE')) NOT NULL,
+  PRIMARY KEY (ID_ASIENTO),
+  FOREIGN KEY (ID_VUELO)
+    REFERENCES dbProyecto_EveryOneFlies.VUELO(ID_VUELO)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+);
+
