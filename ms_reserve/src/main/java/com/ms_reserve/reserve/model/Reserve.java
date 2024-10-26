@@ -14,17 +14,29 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "reservation")
 public class Reserve {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "reservation_id")
+    private Long reservationId;
 
-    private String flightId;
-    private LocalDate dateReserve;
+    @Column(name = "flight_id", nullable = false)
+    private Long flightId;  // Referencia al vuelo por su ID
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "reserve_id")
+    private List<Passenger> passengers;
+
+    @Column(name = "reservation_date", nullable = false)
+    private LocalDate reservationDate;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     private ReservationStatus status;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Passenger> passengers;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category", nullable = false)
+    private SeatCategory category;
 }
