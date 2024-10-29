@@ -26,6 +26,7 @@
         <module>ms_flies</module>
         <module>ms_reserve</module>
         <module>ms_ticket</module>
+        <module>ms_pay</module>
     </modules>
 
     <dependencies>
