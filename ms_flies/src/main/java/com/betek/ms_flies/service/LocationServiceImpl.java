@@ -21,17 +21,16 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public Location createLocation(LocationDTO locationDTO) {
+
+        if (repository.findLocationByCity(locationDTO.city().toLowerCase()).isPresent()){
+            throw new ResourceNotFoundException(
+                    "La Locacion con name " + locationDTO.city() + " ya existe en la base de datos."
+            );
+        }
+
         return repository.save(
                 new Location(
-                        locationDTO.city(),
-                        locationDTO.country(),
-                        locationDTO.fechaInicioAlta(),
-                        locationDTO.fechaFinAlta(),
-                        locationDTO.fechaInicioMedia(),
-                        locationDTO.fechaFinMedia(),
-                        locationDTO.fechaInicioMedia2(),
-                        locationDTO.fechaFinMedia2(),
-                        locationDTO.precioBase()
+                        locationDTO
                 )
         );
     }
@@ -46,30 +45,30 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public Location getLocationByCity(String city) {
 
-        return repository.findByCity(city)
+        return repository.findLocationByCity(city.toLowerCase())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Location por nombre ciudad " + city + " no encontrada."));
     }
 
     @Override
     public List<Location> getLocationByCountry(String country) {
-        return repository.findByCountry(country);
+        return repository.findLocationByCountry(country.toLowerCase());
     }
 
     @Override
-    public List<Location> getLocation() {
+    public List<Location> getLocations() {
         return repository.findAll();
     }
 
     @Override
-    public <T> DeleteResponse<T> deleteById(Location geoData) {
-        Location object = repository.findById(geoData.getIdLocation())
+    public <T> DeleteResponse<T> deleteLocationById(Location location) {
+        Location found = repository.findById(location.getIdLocation())
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        geoData.getClass().getSimpleName() + " con ID " +
-                                geoData.getIdLocation() + " no encontrado"));
+                        location.getClass().getSimpleName() + " con ID " +
+                                location.getIdLocation() + " no encontrado"));
 
-        repository.delete(object);
+        repository.delete(found);
 
-        return new DeleteResponse<>(object.getClass().getSimpleName(), object.getCity());
+        return new DeleteResponse<>(found.getClass().getSimpleName(), found.getCity());
     }
 }

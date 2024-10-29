@@ -16,7 +16,7 @@ public interface LocationService {
 
     List<Location> getLocationByCountry(String country);
 
-    List<Location> getLocation();
+    List<Location> getLocations();
 
-    <T> DeleteResponse<T> deleteById(Location geoData);
+    <T> DeleteResponse<T> deleteLocationById(Location geoData);
 }

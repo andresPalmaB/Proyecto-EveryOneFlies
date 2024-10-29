@@ -7,6 +7,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="ms_reserves" />
         <module name="ms_flies" />
         <module name="ms_reserve" />
         <module name="ms_ticket" />
@@ -19,6 +20,7 @@
       <module name="ms_flies" options="-parameters" />
       <module name="ms_flies (1)" options="-parameters" />
       <module name="ms_reserve" options="-parameters" />
+      <module name="ms_reserves" options="-parameters" />
       <module name="ms_ticket" options="-parameters" />
     </option>
   </component>

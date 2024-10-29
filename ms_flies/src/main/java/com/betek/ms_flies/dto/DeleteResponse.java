@@ -1,11 +1,12 @@
 package com.betek.ms_flies.dto;
 
-import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 public class DeleteResponse<T> {
 
     private String objectType;
