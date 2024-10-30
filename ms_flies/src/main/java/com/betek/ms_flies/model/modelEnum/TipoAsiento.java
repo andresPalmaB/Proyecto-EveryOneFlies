@@ -1,8 +1,8 @@
 package com.betek.ms_flies.model.modelEnum;
 
 public enum TipoAsiento {
-    ECONOMICO,
-    ECONOMICOPREMIUN,
+    ECONOMYC,
+    ECONOMYCPREMIUM,
     BUSINESS,
-    PRIMERACLASE;
+    FIRST_CLASS;
 }

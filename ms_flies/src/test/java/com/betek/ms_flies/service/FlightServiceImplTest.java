@@ -10,7 +10,9 @@ import com.betek.ms_flies.dto.dtoModel.FlightSeatSoldDTO;
 import com.betek.ms_flies.exception.ResourceNotFoundException;
 import com.betek.ms_flies.model.Airport;
 import com.betek.ms_flies.model.Flight;
+import com.betek.ms_flies.model.Seat;
 import com.betek.ms_flies.repository.FlightRepository;
+import com.betek.ms_flies.repository.SeatRepository;
 import com.betek.ms_flies.service.serviceInterface.FlightService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,6 +47,9 @@ class FlightServiceImplTest {
     private AirportDTO airportBOG;
 
     private FlightSeatSoldDTO seatSoldDTO;
+
+    @Autowired
+    private SeatRepository seatRepository;
 
     @BeforeEach
     public void init(){
@@ -104,6 +109,31 @@ class FlightServiceImplTest {
         assertThrows(ResourceNotFoundException.class, () -> service.createFlight(flightDTO));
 
         assertEquals(expected, repository.findFlightByFlightCode("eof1").orElse(null));
+
+        Flight flightCreated = service.createFlight(
+                new FlightDTO(
+                        airlineDTO1,
+                        airportBAQ,
+                        airportMDE,
+                        LocalDate.parse("2024-12-15"),
+                        LocalTime.parse("10:00:00"),
+                        LocalDate.parse("2024-12-15"),
+                        LocalTime.parse("12:00:00"),
+                        6,
+                        3,
+                        2,
+                        1
+                ));
+
+        seatRepository.findSeatByFlightAndAvailable(
+                        repository.findFlightByFlightCode("eof1").orElse(null),
+                        true
+                )
+                .forEach(System.out::println);
+
+        long seat = seatRepository.countSeatByFlight(repository.findFlightByFlightCode("eof4").orElse(null));
+
+        assertEquals(12L, seatRepository.countSeatByFlight(flightCreated));
 
     }
 

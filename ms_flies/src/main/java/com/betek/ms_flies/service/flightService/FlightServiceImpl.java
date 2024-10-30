@@ -5,15 +5,18 @@ import com.betek.ms_flies.dto.OutBoundRoute;
 import com.betek.ms_flies.dto.ReturnRoute;
 import com.betek.ms_flies.dto.dtoModel.FlightDTO;
 import com.betek.ms_flies.dto.dtoModel.FlightSeatSoldDTO;
+import com.betek.ms_flies.dto.dtoModel.SeatDTO;
 import com.betek.ms_flies.exception.ResourceNotFoundException;
 import com.betek.ms_flies.model.Airline;
 import com.betek.ms_flies.model.Airport;
 import com.betek.ms_flies.model.Flight;
+import com.betek.ms_flies.model.Seat;
 import com.betek.ms_flies.model.modelEnum.TipoAsiento;
 import com.betek.ms_flies.repository.FlightRepository;
 import com.betek.ms_flies.service.serviceInterface.AirlineService;
 import com.betek.ms_flies.service.serviceInterface.AirportService;
 import com.betek.ms_flies.service.serviceInterface.FlightService;
+import com.betek.ms_flies.service.serviceInterface.SeatService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +38,9 @@ public class FlightServiceImpl implements FlightService {
 
     @Autowired
     private AirportService airportService;
+
+    @Autowired
+    private SeatService seatService;
 
     @Override
     public boolean doesFlightExist(Airline airline,
@@ -60,7 +66,7 @@ public class FlightServiceImpl implements FlightService {
             throw new ResourceNotFoundException("Este vuelo ya existe.");
         }
 
-        return repository.save(
+        Flight flight = repository.save(
                 new Flight(
                         airline,
                         originAirport,
@@ -75,6 +81,39 @@ public class FlightServiceImpl implements FlightService {
                         flightDTO.firstClassCounter()
                 )
         );
+
+        int seatNumber = 1;
+        int economyLimit = flight.getEconomyCounter();
+        int premiumLimit = economyLimit + flight.getPremiumEconomyCounter();
+        int businessLimit = premiumLimit + flight.getBusinessCounter();
+        int totalSeats = flight.getTotalSeats();
+
+        for (int i = 0; i < totalSeats; i++) {
+
+            TipoAsiento tipoAsiento;
+
+            if (i < economyLimit){
+                tipoAsiento = TipoAsiento.ECONOMYC;
+            } else if (i < premiumLimit){
+                tipoAsiento = TipoAsiento.ECONOMYCPREMIUM;
+            } else if (i < businessLimit) {
+                tipoAsiento = TipoAsiento.BUSINESS;
+            } else {
+                tipoAsiento = TipoAsiento.FIRST_CLASS;
+            }
+
+            seatService.createSeat(
+                    new SeatDTO(flight.getFlightCode(),
+                            true,
+                            tipoAsiento),
+                    seatNumber,
+                    flight
+            );
+
+            seatNumber++;
+        }
+
+        return flight;
     }
 
     @Override
@@ -101,6 +140,22 @@ public class FlightServiceImpl implements FlightService {
                 airportService.getAirportByIataCode(route.aeropuertoOrigenDTO()),
                 airportService.getAirportByIataCode(route.aeropuertoDestinoDTO())
         );
+    }
+
+    @Override
+    public List<Seat> getSeatAvailablebySeatType(SeatDTO seatDTO) {
+
+        Flight flight = this.getFlightByFlightCode(seatDTO.flightCode());
+
+        return seatService.getSeatAvailabilityInFlightBySeatType(seatDTO, flight);
+    }
+
+    @Override
+    public List<Seat> getSeatAvailableFromFlight(String flightCode) {
+
+        Flight flight = this.getFlightByFlightCode(flightCode);
+
+        return seatService.getSeatAvailabilityInFlight(flight);
     }
 
     @Override
