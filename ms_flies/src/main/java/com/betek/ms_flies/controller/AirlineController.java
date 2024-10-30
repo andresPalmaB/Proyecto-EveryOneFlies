@@ -42,14 +42,13 @@ public class AirlineController {
         return ResponseEntity.ok(airline);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Airline> updateAirline(@PathVariable Integer id, @RequestBody Airline updatedAirline) {
-        updatedAirline.setIdAirline(id);  // asegúrate de que la ID coincide
+    @PutMapping("/update")
+    public ResponseEntity<Airline> updateAirline(@RequestBody Airline updatedAirline) {
         Airline airline = airlineService.updateAirline(updatedAirline);
         return ResponseEntity.ok(airline);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<DeleteResponse<?>> deleteAirlineById(@PathVariable Integer id) {
         Airline airline = new Airline();
         airline.setIdAirline(id);

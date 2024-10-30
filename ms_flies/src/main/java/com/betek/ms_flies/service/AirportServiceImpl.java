@@ -111,8 +111,11 @@ public class AirportServiceImpl implements AirportService {
                         airport.getClass().getSimpleName() + " con ID " +
                                 airport.getIdAirport() + " no encontrado"));
 
+        Airport save = new Airport();
+        save.setName(object.getName());
+
         repository.delete(airport);
 
-        return new DeleteResponse<>(object.getClass().getSimpleName(), object.getName());
+        return new DeleteResponse<>(save.getClass().getSimpleName(), save.getName());
     }
 }

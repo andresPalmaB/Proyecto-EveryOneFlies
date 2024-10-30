@@ -19,4 +19,5 @@ public interface AirlineService {
     Airline updateAirline(Airline airline);
 
     <T> DeleteResponse<T> deleteAirlineById(Airline airline);
+
 }
