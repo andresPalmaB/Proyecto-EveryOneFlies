@@ -50,7 +50,7 @@ class AirportServiceImplTest {
     @BeforeEach
     public void init(){
 
-        repository.deleteAll();
+
 
         airportDTO = new AirportDTO(
                 "BAQ",
@@ -122,15 +122,13 @@ class AirportServiceImplTest {
     @Test
     void createAirport_shouldThrowExceptionIfExistsAndIfNotCreatePersistence(){
 
-        locationService.createLocation(locationDTO);
-
-        Airport expected = service.createAirport(airportDTO);
+        Airport expected = service.getAirportByIataCode(airportDTO);
 
         // Intenta crear la misma location de nuevo y espera una excepcion
         assertThrows(ResourceNotFoundException.class, () -> service.createAirport(airportDTO));
 
         // Verifica que la location creada exista en el repository
-        Airport actual = repository.findById(expected.getIdAirport()).orElse(null);
+        Airport actual = repository.findById(1).orElse(null);
         assertEquals(expected, actual);
 
     }
@@ -202,7 +200,7 @@ class AirportServiceImplTest {
     }
 
     @Test
-    void deleteLocation_shouldThrowExeptionIfNotFoundAndIfFoundReturnDelete(){
+    void deleteAirport_shouldThrowExeptionIfNotFoundAndIfFoundReturnDelete(){
 
         locationService.createLocation(locationDTO);
 

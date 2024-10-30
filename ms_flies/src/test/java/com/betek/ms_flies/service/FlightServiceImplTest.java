@@ -1,11 +1,14 @@
 package com.betek.ms_flies.service;
 
+import com.betek.ms_flies.dto.DeleteResponse;
 import com.betek.ms_flies.dto.OutBoundRoute;
 import com.betek.ms_flies.dto.ReturnRoute;
 import com.betek.ms_flies.dto.dtoModel.AirlineDTO;
 import com.betek.ms_flies.dto.dtoModel.AirportDTO;
 import com.betek.ms_flies.dto.dtoModel.FlightDTO;
+import com.betek.ms_flies.dto.dtoModel.FlightSeatSoldDTO;
 import com.betek.ms_flies.exception.ResourceNotFoundException;
+import com.betek.ms_flies.model.Airport;
 import com.betek.ms_flies.model.Flight;
 import com.betek.ms_flies.repository.FlightRepository;
 import com.betek.ms_flies.service.serviceInterface.FlightService;
@@ -40,6 +43,8 @@ class FlightServiceImplTest {
     private AirportDTO airportMDE;
 
     private AirportDTO airportBOG;
+
+    private FlightSeatSoldDTO seatSoldDTO;
 
     @BeforeEach
     public void init(){
@@ -78,6 +83,14 @@ class FlightServiceImplTest {
                 6,
                 3,
                 2,
+                1
+        );
+
+        seatSoldDTO = new FlightSeatSoldDTO(
+                "eof1",
+                1,
+                1,
+                1,
                 1
         );
     }
@@ -141,7 +154,26 @@ class FlightServiceImplTest {
 
         assertEquals(update, repository.findFlightByFlightCode("eof1").orElse(null));
 
+        Flight expected = service.updateSeatsSoldFlight(seatSoldDTO);
 
+        assertEquals(expected, repository.findFlightByFlightCode("eof1").orElse(null));
+
+    }
+
+    @Test
+    void deleteFlight_shouldThrowExeptionIfNotFoundAndIfFoundReturnDelete(){
+
+        Flight toDelete = new Flight();
+
+        Flight finalToDelete = toDelete;
+        finalToDelete.setIdFlight(20L);
+        assertThrows(ResourceNotFoundException.class, () -> service.deleteFlightById(finalToDelete));
+
+        toDelete = repository.findFlightByFlightCode("eof1").orElse(null);
+
+        DeleteResponse<Flight> expected = service.deleteFlightById(toDelete);
+
+        assertEquals(expected, new DeleteResponse<>(toDelete.getClass().getSimpleName(), toDelete.getFlightCode()));
 
     }
 
