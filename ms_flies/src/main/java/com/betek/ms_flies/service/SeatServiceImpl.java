@@ -9,6 +9,7 @@ import com.betek.ms_flies.service.serviceInterface.SeatService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -50,16 +51,23 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
-    public Seat updateSeatAvailability(Seat seat) {
+    public void updateSeatAvailability(String seat) {
 
-        Seat found = repository.findSeatBySeatCode(seat.getSeatCode())
+        Seat found = repository.findSeatBySeatCode(seat)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        seat.getClass().getSimpleName() + " con ID " +
-                                seat.getIdSeat() + " no encontrado"));
+                        "Asiento con codigo " + seat + " no encontrado"));
 
         found.setAvailable(false);
 
-        return repository.save(found);
+        repository.save(found);
+
     }
 
+    @Override
+    @Transactional
+    public void deleteSeats(Flight flight) {
+
+        repository.deleteAllByFlight(flight);
+
+    }
 }

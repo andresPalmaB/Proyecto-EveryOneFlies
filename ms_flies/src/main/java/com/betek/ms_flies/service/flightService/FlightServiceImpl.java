@@ -143,7 +143,7 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public List<Seat> getSeatAvailablebySeatType(SeatDTO seatDTO) {
+    public List<Seat> getSeatAvailableBySeatTypeFromFlight(SeatDTO seatDTO) {
 
         Flight flight = this.getFlightByFlightCode(seatDTO.flightCode());
 
@@ -189,34 +189,61 @@ public class FlightServiceImpl implements FlightService {
 
         Flight found = this.getFlightByFlightCode(seatsSoldDTO.flightCode());
 
-        found.setEconomyCounter(
-                found.getEconomyCounter() - seatsSoldDTO.seatsSoldEconomy()
-        );
+        int rest = getRest(seatsSoldDTO, found);
+        if (rest < 0){
+            throw new ResourceNotFoundException("No puedes comprar mas asientos para FIRST_CLASS");
+        }
 
-        found.setPremiumEconomyCounter(
-                found.getPremiumEconomyCounter() - seatsSoldDTO.seatsSoldPremiumEconomy()
-        );
+        found.setEconomyCounter(found.getEconomyCounter() - seatsSoldDTO.seatsSoldEconomy());
+        found.setPremiumEconomyCounter(found.getPremiumEconomyCounter() - seatsSoldDTO.seatsSoldPremiumEconomy());
+        found.setBusinessCounter(found.getBusinessCounter() - seatsSoldDTO.seatsSoldBusiness());
+        found.setFirstClassCounter(rest);
 
-        found.setBusinessCounter(
-                found.getBusinessCounter() - seatsSoldDTO.seatsSoldBusiness()
-        );
-
-        found.setFirstClassCounter(
-                found.getFirstClassCounter() - seatsSoldDTO.seatsSoldFirstClass()
-        );
+        for(String code : seatsSoldDTO.seatCode()){
+            seatService.updateSeatAvailability(code);
+        }
 
         return repository.save(found);
+
+    }
+
+    private static int getRest(FlightSeatSoldDTO seatsSoldDTO, Flight found) {
+
+        int rest = found.getEconomyCounter() - seatsSoldDTO.seatsSoldEconomy();
+        if (rest < 0){
+            throw new ResourceNotFoundException("No puedes comprar mas asientos para ECONOMYC");
+        }
+
+        rest = found.getPremiumEconomyCounter() - seatsSoldDTO.seatsSoldPremiumEconomy();
+        if (rest < 0){
+            throw new ResourceNotFoundException("No puedes comprar mas asientos para ECONOMYCPREMIUM");
+        }
+
+        rest = found.getBusinessCounter() - seatsSoldDTO.seatsSoldBusiness();
+        if (rest < 0){
+            throw new ResourceNotFoundException("No puedes comprar mas asientos para BUSINESS");
+        }
+
+        rest = found.getFirstClassCounter() - seatsSoldDTO.seatsSoldFirstClass();
+        return rest;
+
     }
 
     @Override
+    @Transactional
     public <T> DeleteResponse<T> deleteFlightById(Flight flight) {
         Flight object = repository.findById(flight.getIdFlight())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         flight.getClass().getSimpleName() + " con ID " +
                                 flight.getIdFlight() + " no encontrado"));
 
+        Flight save = new Flight();
+        save.setFlightCode(flight.getFlightCode());
+
+        seatService.deleteSeats(flight);
+
         repository.delete(flight);
 
-        return new DeleteResponse<>(object.getClass().getSimpleName(), flight.getFlightCode());
+        return new DeleteResponse<>(save.getClass().getSimpleName(), save.getFlightCode());
     }
 }

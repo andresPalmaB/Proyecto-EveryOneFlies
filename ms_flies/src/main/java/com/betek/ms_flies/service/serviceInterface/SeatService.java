@@ -14,6 +14,8 @@ public interface SeatService {
 
     List<Seat> getSeatAvailabilityInFlight(Flight flight);
 
-    Seat updateSeatAvailability(Seat seat);
+    void updateSeatAvailability(String seat);
+
+    void deleteSeats(Flight flight);
 
 }

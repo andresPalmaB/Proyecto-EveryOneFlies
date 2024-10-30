@@ -5,6 +5,7 @@ import com.betek.ms_flies.model.Location;
 import com.betek.ms_flies.model.modelEnum.TipoAsiento;
 
 import java.time.LocalDate;
+import java.time.MonthDay;
 import java.util.Comparator;
 
 public final class FlightCalculateCost {
@@ -12,24 +13,24 @@ public final class FlightCalculateCost {
     public static Double Calculate(TipoAsiento tipo, Location city, LocalDate date, Flight flight){
         switch (tipo){
             case ECONOMYC -> {
-                return city.getBasePrice() * 0.85 *
-                        CalculatePriceBySeason(city, date) *
-                        CalculatePriceByDemand(flight);
+                double proporcionSeason = CalculatePriceBySeason(city, date);
+                double proporcionDemand = CalculatePriceByDemand(flight);
+                return city.getBasePrice() * 0.85 * proporcionSeason * proporcionDemand;
             }
             case ECONOMYCPREMIUM -> {
-                return city.getBasePrice() * 1.1 *
-                        CalculatePriceBySeason(city, flight.getDepartureDate()) *
-                        CalculatePriceByDemand(flight);
+                double proporcionSeason = CalculatePriceBySeason(city, date);
+                double proporcionDemand = CalculatePriceByDemand(flight);
+                return city.getBasePrice() * 1.1 * proporcionSeason * proporcionDemand;
             }
             case BUSINESS -> {
-                return city.getBasePrice() * 1.8 *
-                        CalculatePriceBySeason(city, date) *
-                        CalculatePriceByDemand(flight);
+                double proporcionSeason = CalculatePriceBySeason(city, date);
+                double proporcionDemand = CalculatePriceByDemand(flight);
+                return city.getBasePrice() * 1.8 * proporcionSeason * proporcionDemand;
             }
             case FIRST_CLASS -> {
-                return city.getBasePrice() * 2.3 *
-                        CalculatePriceBySeason(city, date) *
-                        CalculatePriceByDemand(flight);
+                double proporcionSeason = CalculatePriceBySeason(city, date);
+                double proporcionDemand = CalculatePriceByDemand(flight);
+                return city.getBasePrice() * 2.3 * proporcionSeason * proporcionDemand;
             }
         }
         return null;
@@ -37,18 +38,47 @@ public final class FlightCalculateCost {
 
     private static Double CalculatePriceBySeason(Location ciudad, LocalDate fecha){
 
-        Comparator<LocalDate> compararDiaMes = Comparator.comparing(LocalDate::getMonth)
-                .thenComparing(LocalDate::getDayOfMonth);
+        MonthDay startHigh1 = MonthDay.of(
+                ciudad.getHighSeasonStartDate().getMonth(),ciudad.getHighSeasonStartDate().getDayOfMonth()
+        );
 
-        boolean estaDentroRangoAlto = compararDiaMes.compare(fecha, ciudad.getHighSeasonStartDate()) >= 0 &&
-                compararDiaMes.compare(fecha, ciudad.getHighSeasonEndDate()) <= 0 ||
-                compararDiaMes.compare(fecha, ciudad.getHighSeasonStartDate2()) >= 0 &&
-                        compararDiaMes.compare(fecha, ciudad.getHighSeasonEndDate2()) <= 0;
+        MonthDay endHigh1 = MonthDay.of(
+                ciudad.getHighSeasonEndDate().getMonth(), ciudad.getHighSeasonEndDate().getDayOfMonth()
+        );
 
-        boolean estaDentroRangoMedia = compararDiaMes.compare(fecha, ciudad.getMidSeasonStartDate()) >= 0 &&
-                compararDiaMes.compare(fecha, ciudad.getMidSeasonEndDate()) <= 0 ||
-                compararDiaMes.compare(fecha, ciudad.getMidSeasonStartDate2()) >= 0 &&
-                        compararDiaMes.compare(fecha, ciudad.getMidSeasonEndDate2()) <= 0;
+        MonthDay startHigh2 = MonthDay.of(
+                ciudad.getHighSeasonStartDate2().getMonth(),ciudad.getHighSeasonStartDate2().getDayOfMonth()
+        );
+
+        MonthDay endHigh2 = MonthDay.of(
+                ciudad.getHighSeasonEndDate2().getMonth(), ciudad.getHighSeasonEndDate2().getDayOfMonth()
+        );
+
+        MonthDay target = MonthDay.of(fecha.getMonth(), fecha.getDayOfMonth());
+
+        boolean estaDentroRangoAlto = target.isAfter(startHigh1) || target.isBefore(endHigh1) ||
+                target.isAfter(startHigh2) && target.isBefore(endHigh2);
+
+        MonthDay startM1 = MonthDay.of(
+                ciudad.getMidSeasonStartDate().getMonth(),ciudad.getMidSeasonStartDate().getDayOfMonth()
+        );
+
+        MonthDay endM1 = MonthDay.of(
+                ciudad.getMidSeasonEndDate().getMonth(), ciudad.getMidSeasonEndDate().getDayOfMonth()
+        );
+
+        MonthDay startM2 = MonthDay.of(
+                ciudad.getMidSeasonStartDate2().getMonth(),ciudad.getMidSeasonStartDate2().getDayOfMonth()
+        );
+
+        MonthDay endM2 = MonthDay.of(
+                ciudad.getMidSeasonEndDate2().getMonth(), ciudad.getMidSeasonEndDate2().getDayOfMonth()
+        );
+
+        MonthDay target2 = MonthDay.of(fecha.getMonth(), fecha.getDayOfMonth());
+
+        boolean estaDentroRangoMedia = target2.isAfter(startM1) && target2.isBefore(endM1) ||
+                target2.isAfter(startM2) && target2.isBefore(endM2);
 
         if (estaDentroRangoAlto){
             return 1.5;
@@ -61,8 +91,8 @@ public final class FlightCalculateCost {
 
     private static double CalculatePriceByDemand(Flight flight) {
 
-        int totalPuestosVendidos = flight.getBusinessCounter() + flight.getEconomyCounter() +
-                flight.getPremiumEconomyCounter() + flight.getFirstClassCounter();
+        int totalPuestosVendidos = flight.getTotalSeats() - (flight.getBusinessCounter() + flight.getEconomyCounter() +
+                flight.getPremiumEconomyCounter() + flight.getFirstClassCounter());
 
         if (totalPuestosVendidos > 0.5 * flight.getTotalSeats() &&
                 totalPuestosVendidos < 0.8 * flight.getTotalSeats()){

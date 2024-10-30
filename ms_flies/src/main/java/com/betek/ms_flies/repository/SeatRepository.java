@@ -24,4 +24,5 @@ public interface SeatRepository extends JpaRepository<Seat, Integer> {
 
     long countSeatByFlight(Flight flight);
 
+    void deleteAllByFlight(Flight flight);
 }

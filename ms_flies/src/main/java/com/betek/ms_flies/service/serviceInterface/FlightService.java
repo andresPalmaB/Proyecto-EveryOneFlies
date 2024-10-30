@@ -32,7 +32,7 @@ public interface FlightService {
 
     List<Flight> getRutaByRangoFechas(ReturnRoute route);
 
-    List<Seat> getSeatAvailablebySeatType(SeatDTO seatDTO);
+    List<Seat> getSeatAvailableBySeatTypeFromFlight(SeatDTO seatDTO);
 
     List<Seat> getSeatAvailableFromFlight(String flightCode);
 

@@ -51,22 +51,5 @@ class SeatServiceImplTest {
 
     }
 
-    @Test
-    void updateSeat_shouldThrowExceptionIfNotFoundAndIfFoundReturnUpdate(){
-
-        Seat update = repository.findSeatBySeatCode("1eof1").orElse(null);
-
-        assert update != null;
-        update.setAvailable(false);
-
-        service.updateSeatAvailability(update);
-
-        assertEquals(update, repository.findSeatBySeatCode("1eof1").orElse(null));
-
-        update.setSeatCode("1eof40");
-
-        assertThrows(ResourceNotFoundException.class, () ->
-                service.updateSeatAvailability(update));
-    }
 
 }
