@@ -30,5 +30,6 @@ public record LocationDTO(String country,
 
                           @JsonFormat(pattern = "yyyy-MM-dd")
                           LocalDate fechaFinMedia2,
+
                           Double precioBase) {
 }

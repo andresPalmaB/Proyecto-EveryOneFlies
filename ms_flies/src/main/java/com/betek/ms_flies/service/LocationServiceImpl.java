@@ -67,8 +67,11 @@ public class LocationServiceImpl implements LocationService {
                         location.getClass().getSimpleName() + " con ID " +
                                 location.getIdLocation() + " no encontrado"));
 
+        Location save = new Location();
+        save.setCity(found.getCity());
+
         repository.delete(found);
 
-        return new DeleteResponse<>(found.getClass().getSimpleName(), found.getCity());
+        return new DeleteResponse<>(save.getClass().getSimpleName(), save.getCity());
     }
 }
