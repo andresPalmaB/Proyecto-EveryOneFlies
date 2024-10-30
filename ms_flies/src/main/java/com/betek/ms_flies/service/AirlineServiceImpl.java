@@ -87,9 +87,13 @@ public class AirlineServiceImpl implements AirlineService {
                         airline.getClass().getSimpleName() + " con ID " + airline.getIdAirline() + " no encontrado")
                 );
 
+        Airline guardado = new Airline();
+        guardado.setIdAirline(found.getIdAirline());
+        guardado.setName(found.getName().toUpperCase());
+
         repository.delete(airline);
 
-        return new DeleteResponse<>(found.getClass().getSimpleName(), found.getName());
+        return new DeleteResponse<>(guardado.getClass().getSimpleName(), guardado.getName());
     }
 }
 
