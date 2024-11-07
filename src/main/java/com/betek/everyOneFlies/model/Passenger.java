@@ -14,22 +14,27 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "passenger")
+@Table(name = "PASAJERO")
 public class Passenger {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "passenger_id")
-    private Long id;
+    @Column(name = "ID_PASAJERO")
+    private Long idPassenger;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_RESERVACION", referencedColumnName = "ID_RESERVACION", nullable = false)
+    private Reserve reserve;
+
+    @Column(name = "ES_RESPONSABLE", nullable = false)
+    private boolean isResponsibleForPayment;
 
     @NotBlank(message = "First name is mandatory")
-    @Size(min = 2, max = 50, message = "First name must be between 2 and 50 characters")
-    @Column(name = "first_name", nullable = false)
+    @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;
 
     @NotBlank(message = "Last name is mandatory")
-    @Size(min = 2, max = 50, message = "Last name must be between 2 and 50 characters")
-    @Column(name = "last_name", nullable = false)
+    @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
 
     @NotBlank(message = "Email is mandatory")
@@ -42,7 +47,10 @@ public class Passenger {
     @Column(name = "phone", nullable = false)
     private String phone;
 
-    public Passenger(String firstName, String lastName, String email, String phone) {
+    public Passenger(Reserve reserve, boolean isResponsibleForPayment, String firstName,
+                     String lastName, String email, String phone) {
+        this.reserve = reserve;
+        this.isResponsibleForPayment = isResponsibleForPayment;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;

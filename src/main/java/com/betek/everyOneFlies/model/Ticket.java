@@ -16,12 +16,12 @@ public class Ticket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ticket_id")
+    @Column(name = "ID_TICKET")
     private Long idTicket;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reservation_id", nullable = false)
-    private Reserve reserve;
+    @ManyToOne
+    @JoinColumn(name = "ID_PASAJERO", nullable = false)
+    private Passenger passenger;
 
     @Column(name = "issue_date", nullable = false)
     private LocalDate issueDate;
@@ -30,8 +30,8 @@ public class Ticket {
     @Column(name = "ticket_status", nullable = false)
     private TicketStatus ticketStatus;
 
-    public Ticket(Reserve reserve, LocalDate issueDate, TicketStatus ticketStatus) {
-        this.reserve = reserve;
+    public Ticket(Passenger passenger, LocalDate issueDate, TicketStatus ticketStatus) {
+        this.passenger = passenger;
         this.issueDate = issueDate;
         this.ticketStatus = ticketStatus;
     }

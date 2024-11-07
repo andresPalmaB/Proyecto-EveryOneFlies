@@ -20,15 +20,11 @@ public class Reserve {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "reservation_id")
-    private Long reservationId;
+    @Column(name = "ID_RESERVACION")
+    private Long idReserve;
 
-    @Column(name = "ID_VUELO", nullable = false)
-    private Long flightId;  // Referencia al vuelo por su ID
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "reserve_id")
-    private List<Passenger> passengers;
+    @Column(name = "CODIGO")
+    private String reserveCode;
 
     @Column(name = "reservation_date", nullable = false)
     private LocalDate reservationDate;
@@ -37,16 +33,25 @@ public class Reserve {
     @Column(name = "status", nullable = false)
     private ReservationStatus status;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "category", nullable = false)
-    private TipoAsiento category;
+    @ManyToOne
+    @JoinColumn(name = "ID_VUELO", referencedColumnName = "ID_VUELO", nullable = false)
+    private Flight flight;
 
-    public Reserve(Long flightId, List<Passenger> passengers, LocalDate reservationDate, ReservationStatus status, TipoAsiento category) {
-        this.flightId = flightId;
-        this.passengers = passengers;
+    @OneToOne
+    @JoinColumn(name = "ID_ASIENTO", referencedColumnName = "ID_ASIENTO", nullable = false)
+    private Seat seat;
+
+    public Reserve(LocalDate reservationDate,
+                   Flight flight, Seat seat) {
         this.reservationDate = reservationDate;
-        this.status = status;
-        this.category = category;
+        this.status = ReservationStatus.PENDING;
+        this.flight = flight;
+        this.seat = seat;
+    }
+
+    @PostPersist
+    public void inicializarCodigo(){
+        this.reserveCode = getFlight().getFlightCode() + "-R" + this.getIdReserve();
     }
 
     public void updateStatus(ReservationStatus newStatus) {
