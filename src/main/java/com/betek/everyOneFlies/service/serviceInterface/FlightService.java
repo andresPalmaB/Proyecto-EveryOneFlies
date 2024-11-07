@@ -10,7 +10,7 @@ import com.betek.everyOneFlies.model.Airline;
 import com.betek.everyOneFlies.model.Airport;
 import com.betek.everyOneFlies.model.Flight;
 import com.betek.everyOneFlies.model.Seat;
-import com.betek.everyOneFlies.model.modelEnum.TipoAsiento;
+import com.betek.everyOneFlies.model.modelEnum.SeatCategory;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -38,7 +38,7 @@ public interface FlightService {
 
     List<Seat> getSeatAvailableFromFlight(String flightCode);
 
-    Double getFlightCost(TipoAsiento tipo, String flightCode);
+    Double getFlightCost(SeatCategory tipo, String flightCode);
 
     Flight updateFlightDateTime(Flight vuelo);
 

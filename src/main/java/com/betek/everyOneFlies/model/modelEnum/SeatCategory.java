@@ -1,6 +1,6 @@
 package com.betek.everyOneFlies.model.modelEnum;
 
-public enum TipoAsiento {
+public enum SeatCategory {
     ECONOMYC,
     ECONOMYCPREMIUM,
     BUSINESS,

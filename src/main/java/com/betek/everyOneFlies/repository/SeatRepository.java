@@ -2,7 +2,7 @@ package com.betek.everyOneFlies.repository;
 
 import com.betek.everyOneFlies.model.Flight;
 import com.betek.everyOneFlies.model.Seat;
-import com.betek.everyOneFlies.model.modelEnum.TipoAsiento;
+import com.betek.everyOneFlies.model.modelEnum.SeatCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +16,7 @@ public interface SeatRepository extends JpaRepository<Seat, Integer> {
 
     List<Seat> findSeatByFlightAndTipoAsientoAndAvailable(
             Flight flight,
-            TipoAsiento tipoAsiento,
+            SeatCategory tipoAsiento,
             Boolean available
     );
 

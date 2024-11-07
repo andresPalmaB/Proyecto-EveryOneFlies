@@ -1,6 +1,8 @@
 package com.betek.everyOneFlies.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -9,22 +11,25 @@ import lombok.*;
 @EqualsAndHashCode
 @ToString
 @Entity
-@Table(name = "AEROPUERTO")
+@Table(name = "AIRPORTS")
 public class Airport {
 
     @Id
-    @Column(name = "ID_AEROPUERTO")
+    @Column(name = "ID_AIRPORT")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idAirport;
 
-    @Column(name = "CODIGO_IATA", nullable = false, length = 3)
+    @NotBlank(message = "Airport IATA code is mandatory")
+    @Column(name = "IATA_CODE", nullable = false, length = 3)
     private String iataCode;
 
-    @Column(name = "NOMBRE_AEROPUERTO", nullable = false, length = 50)
+    @NotBlank(message = "Airport name is mandatory")
+    @Column(name = "AIRPORT_NAME", nullable = false, length = 50)
     private String name;
 
     @ManyToOne
     @JoinColumn(name = "ID_LOCATION", referencedColumnName = "ID_LOCATION", nullable = false)
+    @NotNull(message = "Location is mandatory")
     private Location location;
 
     public Airport(String iataCode, String name, Location location) {

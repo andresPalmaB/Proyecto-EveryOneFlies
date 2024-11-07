@@ -2,15 +2,14 @@ package com.betek.everyOneFlies.service.flightService;
 
 import com.betek.everyOneFlies.model.Flight;
 import com.betek.everyOneFlies.model.Location;
-import com.betek.everyOneFlies.model.modelEnum.TipoAsiento;
+import com.betek.everyOneFlies.model.modelEnum.SeatCategory;
 
 import java.time.LocalDate;
 import java.time.MonthDay;
-import java.util.Comparator;
 
 public final class FlightCalculateCost {
 
-    public static Double Calculate(TipoAsiento tipo, Location city, LocalDate date, Flight flight){
+    public static Double Calculate(SeatCategory tipo, Location city, LocalDate date, Flight flight){
         switch (tipo){
             case ECONOMYC -> {
                 double proporcionSeason = CalculatePriceBySeason(city, date);

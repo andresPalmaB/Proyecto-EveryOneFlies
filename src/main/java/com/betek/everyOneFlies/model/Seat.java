@@ -1,6 +1,6 @@
 package com.betek.everyOneFlies.model;
 
-import com.betek.everyOneFlies.model.modelEnum.TipoAsiento;
+import com.betek.everyOneFlies.model.modelEnum.SeatCategory;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,32 +10,32 @@ import lombok.*;
 @EqualsAndHashCode
 @ToString
 @Entity
-@Table(name = "ASIENTOS")
+@Table(name = "SEATS")
 public class Seat {
 
     @Id
-    @Column(name = "ID_ASIENTO")
+    @Column(name = "ID_SEAT")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idSeat;
 
-    @Column(name = "CODIGO_ASIENTO")
+    @Column(name = "SEAT_CODE")
     private String seatCode;
 
     @ManyToOne
-    @JoinColumn(name = "ID_VUELO", referencedColumnName = "ID_VUELO", nullable = false)
+    @JoinColumn(name = "ID_FLIGHT", referencedColumnName = "ID_FLIGHT", nullable = false)
     private Flight flight;
 
-    @Column(name = "DISPONIBLE", nullable = false)
-    private boolean available;
+    @Column(name = "AVAILABLE", nullable = false)
+    private Boolean available;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "TIPO_ASIENTO", nullable = false)
-    private TipoAsiento tipoAsiento;
+    @Column(name = "SEAT_CATEGORY", nullable = false)
+    private SeatCategory seatCategory;
 
-    public Seat(Flight flight, boolean disponible, TipoAsiento tipoAsiento, int seatNumbre) {
+    public Seat(Flight flight, Boolean available, SeatCategory seatCategory, int seatNumbre) {
         this.flight = flight;
-        this.available = disponible;
-        this.tipoAsiento = tipoAsiento;
+        this.available = available;
+        this.seatCategory = seatCategory;
         this.seatCode = seatNumbre + flight.getFlightCode();
     }
 

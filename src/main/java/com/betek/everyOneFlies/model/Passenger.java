@@ -1,10 +1,7 @@
 package com.betek.everyOneFlies.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,40 +11,44 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "PASAJERO")
+@Table(name = "PASSENGER")
 public class Passenger {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID_PASAJERO")
+    @Column(name = "ID_PASSENGER")
     private Long idPassenger;
 
     @ManyToOne
-    @JoinColumn(name = "ID_RESERVACION", referencedColumnName = "ID_RESERVACION", nullable = false)
+    @JoinColumn(name = "ID_RESERVE", referencedColumnName = "ID_RESERVER", nullable = false)
+    @NotNull(message = "Reserve is mandatory")
     private Reserve reserve;
 
-    @Column(name = "ES_RESPONSABLE", nullable = false)
-    private boolean isResponsibleForPayment;
+    @Column(name = "IS_RESPONSABLE", nullable = false)
+    @NotNull(message = "Responsible for payment is mandatory")
+    private Boolean isResponsibleForPayment;
 
     @NotBlank(message = "First name is mandatory")
-    @Column(name = "first_name", nullable = false, length = 50)
+    @Size(min = 1, max = 50, message = "First Name must be between 1 and 50 characters")
+    @Column(name = "FIRST_NAME", nullable = false, length = 50)
     private String firstName;
 
     @NotBlank(message = "Last name is mandatory")
-    @Column(name = "last_name", nullable = false, length = 50)
+    @Size(min = 1, max = 50, message = "Last Name must be between 1 and 50 characters")
+    @Column(name = "LAST_NAME", nullable = false, length = 50)
     private String lastName;
 
     @NotBlank(message = "Email is mandatory")
     @Email(message = "Invalid email format")
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "EMAIL", nullable = false, unique = true)
     private String email;
 
     @NotBlank(message = "Phone number is mandatory")
     @Pattern(regexp = "^[0-9]{10,15}$", message = "Phone number must be between 10 and 15 digits")
-    @Column(name = "phone", nullable = false)
+    @Column(name = "PHONE", nullable = false)
     private String phone;
 
-    public Passenger(Reserve reserve, boolean isResponsibleForPayment, String firstName,
+    public Passenger(Reserve reserve, Boolean isResponsibleForPayment, String firstName,
                      String lastName, String email, String phone) {
         this.reserve = reserve;
         this.isResponsibleForPayment = isResponsibleForPayment;
@@ -59,9 +60,9 @@ public class Passenger {
 
     @Override
     public String toString() {
-        return  "       Nombre:    " + firstName + '\n' +
-                "       Apellido:  " + lastName + '\n' +
-                "       Email:     " + email + '\n' +
-                "       Telefono:  " + phone + '\n';
+        return  "Nombre:    " + firstName + '\n' +
+                "Apellido:  " + lastName + '\n' +
+                "Email:     " + email + '\n' +
+                "Telefono:  " + phone + '\n';
     }
 }

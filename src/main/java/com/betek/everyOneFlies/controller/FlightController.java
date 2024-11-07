@@ -8,7 +8,7 @@ import com.betek.everyOneFlies.dto.dtoModel.FlightSeatSoldDTO;
 import com.betek.everyOneFlies.dto.dtoModel.SeatDTO;
 import com.betek.everyOneFlies.model.Flight;
 import com.betek.everyOneFlies.model.Seat;
-import com.betek.everyOneFlies.model.modelEnum.TipoAsiento;
+import com.betek.everyOneFlies.model.modelEnum.SeatCategory;
 import com.betek.everyOneFlies.service.serviceInterface.FlightService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +69,7 @@ public class FlightController {
     }
 
     @GetMapping("/cost/{flightCode}")
-    public ResponseEntity<Double> getFlightCost(@PathVariable String flightCode, @RequestParam TipoAsiento tipo) {
+    public ResponseEntity<Double> getFlightCost(@PathVariable String flightCode, @RequestParam SeatCategory tipo) {
         Double cost = flightService.getFlightCost(tipo, flightCode);
         return ResponseEntity.ok(cost);
     }

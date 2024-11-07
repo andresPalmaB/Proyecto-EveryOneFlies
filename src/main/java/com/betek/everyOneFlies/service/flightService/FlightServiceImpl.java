@@ -11,7 +11,7 @@ import com.betek.everyOneFlies.model.Airline;
 import com.betek.everyOneFlies.model.Airport;
 import com.betek.everyOneFlies.model.Flight;
 import com.betek.everyOneFlies.model.Seat;
-import com.betek.everyOneFlies.model.modelEnum.TipoAsiento;
+import com.betek.everyOneFlies.model.modelEnum.SeatCategory;
 import com.betek.everyOneFlies.repository.FlightRepository;
 import com.betek.everyOneFlies.service.serviceInterface.AirlineService;
 import com.betek.everyOneFlies.service.serviceInterface.AirportService;
@@ -90,16 +90,16 @@ public class FlightServiceImpl implements FlightService {
 
         for (int i = 0; i < totalSeats; i++) {
 
-            TipoAsiento tipoAsiento;
+            SeatCategory tipoAsiento;
 
             if (i < economyLimit){
-                tipoAsiento = TipoAsiento.ECONOMYC;
+                tipoAsiento = SeatCategory.ECONOMYC;
             } else if (i < premiumLimit){
-                tipoAsiento = TipoAsiento.ECONOMYCPREMIUM;
+                tipoAsiento = SeatCategory.ECONOMYCPREMIUM;
             } else if (i < businessLimit) {
-                tipoAsiento = TipoAsiento.BUSINESS;
+                tipoAsiento = SeatCategory.BUSINESS;
             } else {
-                tipoAsiento = TipoAsiento.FIRST_CLASS;
+                tipoAsiento = SeatCategory.FIRST_CLASS;
             }
 
             seatService.createSeat(
@@ -165,7 +165,7 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public Double getFlightCost(TipoAsiento tipo, String flightCode) {
+    public Double getFlightCost(SeatCategory tipo, String flightCode) {
 
         Flight flight = this.getFlightByFlightCode(flightCode);
 

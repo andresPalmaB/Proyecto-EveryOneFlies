@@ -1,15 +1,14 @@
 package com.betek.everyOneFlies.model;
 
 import com.betek.everyOneFlies.model.modelEnum.ReservationStatus;
-import com.betek.everyOneFlies.model.modelEnum.TipoAsiento;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Getter
 @Setter
@@ -23,22 +22,27 @@ public class Reserve {
     @Column(name = "ID_RESERVACION")
     private Long idReserve;
 
-    @Column(name = "CODIGO")
+    @NotBlank(message = "Reservation code is mandatory")
+    @Column(name = "RESERVATION_CODE")
     private String reserveCode;
 
-    @Column(name = "reservation_date", nullable = false)
+    @Column(name = "RESERVATION_DATE", nullable = false)
+    @NotNull(message = "Reservation date is mandatory")
     private LocalDate reservationDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(name = "RESERVATION_STATUS", nullable = false)
+    @NotNull(message = "Reservation status is mandatory")
     private ReservationStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "ID_VUELO", referencedColumnName = "ID_VUELO", nullable = false)
+    @JoinColumn(name = "ID_FLIGHT", referencedColumnName = "ID_FLIGHT", nullable = false)
+    @NotNull(message = "Flight is mandatory")
     private Flight flight;
 
     @OneToOne
-    @JoinColumn(name = "ID_ASIENTO", referencedColumnName = "ID_ASIENTO", nullable = false)
+    @JoinColumn(name = "ID_SEAT", referencedColumnName = "ID_SEAT", nullable = false)
+    @NotNull(message = "Seat is mandatory")
     private Seat seat;
 
     public Reserve(LocalDate reservationDate,
@@ -50,7 +54,7 @@ public class Reserve {
     }
 
     @PostPersist
-    public void inicializarCodigo(){
+    public void initializeCode(){
         this.reserveCode = getFlight().getFlightCode() + "-R" + this.getIdReserve();
     }
 
