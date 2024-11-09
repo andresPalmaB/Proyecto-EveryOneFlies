@@ -21,22 +21,30 @@ public class SeatServiceImpl implements SeatService {
     private SeatRepository repository;
 
     @Override
-    public void createSeat(SeatDTO seatDTO, int seatNumber, Flight flight) {
+    public void createSeat(SeatDTO seatDTO, Integer seatNumber, Flight flight) {
 
         repository.save(
                 new Seat(
                         flight,
-                        seatDTO.disponible(),
-                        seatDTO.tipoAsiento(),
+                        seatDTO.available(),
+                        seatDTO.seatCategory(),
                         seatNumber
                 ));
     }
 
     @Override
+    public Seat getSeatBySeatCode(String seatCode){
+        return repository.findSeatBySeatCode(seatCode)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                                "Seat with Code " + seatCode + " not found."));
+
+    }
+
+    @Override
     public List<Seat> getSeatAvailabilityInFlightBySeatType(SeatDTO seatDTO, Flight flight) {
-        return repository.findSeatByFlightAndTipoAsientoAndAvailable(
+        return repository.findSeatByFlightAndSeatCategoryAndAvailable(
                 flight,
-                seatDTO.tipoAsiento(),
+                seatDTO.seatCategory(),
                 true
         );
     }
@@ -51,11 +59,9 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
-    public void updateSeatAvailability(String seat) {
+    public void updateSeatAvailability(Seat seat) {
 
-        Seat found = repository.findSeatBySeatCode(seat)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Asiento con codigo " + seat + " no encontrado"));
+        Seat found = this.getSeatBySeatCode(seat.getSeatCode());
 
         found.setAvailable(false);
 
@@ -64,10 +70,7 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
-    @Transactional
     public void deleteSeats(Flight flight) {
-
         repository.deleteAllByFlight(flight);
-
     }
 }

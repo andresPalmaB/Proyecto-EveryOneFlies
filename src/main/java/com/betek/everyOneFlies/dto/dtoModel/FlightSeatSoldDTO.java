@@ -8,6 +8,6 @@ public record FlightSeatSoldDTO(
         Integer seatsSoldPremiumEconomy,
         Integer seatsSoldBusiness,
         Integer seatsSoldFirstClass,
-        List<String> seatCode
+        List<String> seatCodes
 ) {
 }

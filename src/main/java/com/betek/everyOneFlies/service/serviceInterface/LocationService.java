@@ -18,5 +18,5 @@ public interface LocationService {
 
     List<Location> getLocations();
 
-    <T> DeleteResponse<T> deleteLocationById(Location geoData);
+    <T> DeleteResponse<T> deleteLocation(Location geoData);
 }

@@ -3,6 +3,7 @@ package com.betek.everyOneFlies.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
+@EqualsAndHashCode
 @Table(name = "PASSENGER")
 public class Passenger {
 
@@ -60,9 +62,29 @@ public class Passenger {
 
     @Override
     public String toString() {
-        return  "Nombre:    " + firstName + '\n' +
-                "Apellido:  " + lastName + '\n' +
-                "Email:     " + email + '\n' +
-                "Telefono:  " + phone + '\n';
+        if (isResponsibleForPayment){
+            return  "Firstname: " + firstName + '\n' +
+                    "Lastname:  " + lastName + '\n' + '\n' +
+
+                    "Reserve Information:  " + '\n' +
+                    "Code:   " + reserve.getReserveCode() + '\n' +
+                    "Date:   " + reserve.getReservationDate() + '\n' +
+                    "Status: " + reserve.getStatus() + '\n' + '\n' +
+
+                    "Flight Information:" + '\n' +
+                    reserve.getFlight() + '\n' + '\n' +
+
+                    "Seat Information:" + '\n' +
+                    reserve.getSeat();
+        } else {
+            return  "Firstname: " + firstName + '\n' +
+                    "Lastname:  " + lastName + '\n' + '\n' +
+
+                    "Flight Information:" + '\n' +
+                    reserve.getFlight() + '\n' + '\n' +
+
+                    "Seat Information:" + '\n' +
+                    reserve.getSeat();
+        }
     }
 }

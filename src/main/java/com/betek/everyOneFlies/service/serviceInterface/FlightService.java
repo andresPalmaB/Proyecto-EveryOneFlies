@@ -3,6 +3,7 @@ package com.betek.everyOneFlies.service.serviceInterface;
 import com.betek.everyOneFlies.dto.DeleteResponse;
 import com.betek.everyOneFlies.dto.OutBoundRoute;
 import com.betek.everyOneFlies.dto.ReturnRoute;
+import com.betek.everyOneFlies.dto.dtoModel.FlightCostDTO;
 import com.betek.everyOneFlies.dto.dtoModel.FlightDTO;
 import com.betek.everyOneFlies.dto.dtoModel.FlightSeatSoldDTO;
 import com.betek.everyOneFlies.dto.dtoModel.SeatDTO;
@@ -38,7 +39,7 @@ public interface FlightService {
 
     List<Seat> getSeatAvailableFromFlight(String flightCode);
 
-    Double getFlightCost(SeatCategory tipo, String flightCode);
+    Double getFlightCost(FlightCostDTO flightCostDTO);
 
     Flight updateFlightDateTime(Flight vuelo);
 

@@ -39,4 +39,9 @@ public class Seat {
         this.seatCode = seatNumbre + flight.getFlightCode();
     }
 
+    @Override
+    public String toString() {
+        return  "Code: " + seatCode + '\n' +
+                "Seat Category:" + seatCategory;
+    }
 }

@@ -11,12 +11,12 @@ public final class FlightCalculateCost {
 
     public static Double Calculate(SeatCategory tipo, Location city, LocalDate date, Flight flight){
         switch (tipo){
-            case ECONOMYC -> {
+            case ECONOMICAL -> {
                 double proporcionSeason = CalculatePriceBySeason(city, date);
                 double proporcionDemand = CalculatePriceByDemand(flight);
                 return city.getBasePrice() * 0.85 * proporcionSeason * proporcionDemand;
             }
-            case ECONOMYCPREMIUM -> {
+            case ECONOMICAL_PREMIUM -> {
                 double proporcionSeason = CalculatePriceBySeason(city, date);
                 double proporcionDemand = CalculatePriceByDemand(flight);
                 return city.getBasePrice() * 1.1 * proporcionSeason * proporcionDemand;

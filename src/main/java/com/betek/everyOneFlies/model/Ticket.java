@@ -39,4 +39,10 @@ public class Ticket {
         this.issueDate = issueDate;
         this.ticketStatus = ticketStatus;
     }
+
+    public String generateNameTicket(){
+        return passenger.getFirstName() + "_" +
+                passenger.getLastName() + "_" +
+                passenger.getReserve().getReserveCode();
+    }
 }

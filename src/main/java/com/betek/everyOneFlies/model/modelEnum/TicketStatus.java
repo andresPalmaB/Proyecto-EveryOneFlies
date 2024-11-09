@@ -1,7 +1,7 @@
 package com.betek.everyOneFlies.model.modelEnum;
 
 public enum TicketStatus {
-    CONFIRMADO,
+    CONFIRMED,
     CHECK_IN,
-    CANCELADO
+    CANCELED
 }

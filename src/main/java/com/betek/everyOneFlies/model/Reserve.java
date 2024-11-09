@@ -4,6 +4,7 @@ import com.betek.everyOneFlies.model.modelEnum.ReservationStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @Entity
+@EqualsAndHashCode
 @Table(name = "reservation")
 public class Reserve {
 
@@ -46,16 +48,12 @@ public class Reserve {
     private Seat seat;
 
     public Reserve(LocalDate reservationDate,
-                   Flight flight, Seat seat) {
+                   Flight flight, Seat seat, String reserveCode) {
         this.reservationDate = reservationDate;
         this.status = ReservationStatus.PENDING;
         this.flight = flight;
         this.seat = seat;
-    }
-
-    @PostPersist
-    public void initializeCode(){
-        this.reserveCode = getFlight().getFlightCode() + "-R" + this.getIdReserve();
+        this.reserveCode = reserveCode;
     }
 
     public void updateStatus(ReservationStatus newStatus) {

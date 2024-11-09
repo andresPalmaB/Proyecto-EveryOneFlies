@@ -25,13 +25,14 @@ public class AirlineServiceImpl implements AirlineService {
 
         if (repository.findAirlineByName(airlineDTO.name().toLowerCase()).isPresent()){
             throw new ResourceNotFoundException(
-                    "La Aerolinea con name " + airlineDTO.name() + " ya existe en la base de datos."
+                    "The Airline whit the name " + airlineDTO.name() + " already exists in the database."
             );
         }
 
         return repository.save(
                 new Airline(
-                        airlineDTO
+                        airlineDTO.name().toLowerCase(),
+                        airlineDTO.acronym().toLowerCase()
                 )
         );
 
@@ -41,7 +42,7 @@ public class AirlineServiceImpl implements AirlineService {
     public Airline getAirlineById(Integer id) {
         return repository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException(
-                        "Aerolinea con ID " + id + " no encontrada."
+                        "Airline with ID " + id + " not found."
                 )
         );
     }
@@ -56,7 +57,7 @@ public class AirlineServiceImpl implements AirlineService {
         return repository.findAirlineByName(airlineDTO.name().toLowerCase())
                 .orElseThrow(
                         ()-> new ResourceNotFoundException(
-                        "Aerolinea por name " + airlineDTO.name() + " no encontrada."
+                        "Airline with the name " + airlineDTO.name() + " not found."
                         )
                 );
     }
@@ -65,12 +66,7 @@ public class AirlineServiceImpl implements AirlineService {
     @Transactional
     public Airline updateAirline(Airline airline) {
 
-        Airline found = repository.findById(airline.getIdAirline())
-                .orElseThrow(
-                        () -> new ResourceNotFoundException(
-                                "Aerolinea con ID " + airline.getIdAirline() + " no encontrada."
-                        )
-                );
+        Airline found = this.getAirlineById(airline.getIdAirline());
 
         found.setName(airline.getName().toLowerCase());
         found.setAcronym(airline.getAcronym().toLowerCase());
@@ -81,19 +77,21 @@ public class AirlineServiceImpl implements AirlineService {
     @Override
     public <T> DeleteResponse<T> deleteAirlineById(Airline airline) {
 
-        Airline found = repository.findById(airline.getIdAirline())
-                .orElseThrow(
-                        () -> new ResourceNotFoundException(
-                        airline.getClass().getSimpleName() + " con ID " + airline.getIdAirline() + " no encontrado")
-                );
+        Airline found = this.getAirlineById(airline.getIdAirline());
 
-        Airline guardado = new Airline();
-        guardado.setIdAirline(found.getIdAirline());
-        guardado.setName(found.getName().toUpperCase());
+        if (!found.equals(airline)){
+            throw new ResourceNotFoundException(
+                    "The airline data does not match the database. Please check and try again."
+            );
+        }
+
+        Airline saved = new Airline();
+        saved.setIdAirline(found.getIdAirline());
+        saved.setName(found.getName().toUpperCase());
 
         repository.delete(airline);
 
-        return new DeleteResponse<>(guardado.getClass().getSimpleName(), guardado.getName());
+        return new DeleteResponse<>(saved.getClass().getSimpleName(), saved.getName());
     }
 }
 

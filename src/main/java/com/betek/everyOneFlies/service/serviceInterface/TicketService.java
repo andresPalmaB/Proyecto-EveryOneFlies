@@ -11,5 +11,5 @@ public interface TicketService {
 
     Ticket updateTicket(Ticket ticket);
 
-    Ticket getTicketById(long idticket);
+    Ticket getTicketById(Long idticket);
 }

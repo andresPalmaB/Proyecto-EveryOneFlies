@@ -24,7 +24,7 @@ public class LocationServiceImpl implements LocationService {
 
         if (repository.findLocationByCity(locationDTO.city().toLowerCase()).isPresent()){
             throw new ResourceNotFoundException(
-                    "La Locacion con name " + locationDTO.city() + " ya existe en la base de datos."
+                    "The Location with the name " + locationDTO.city() + " already exists in the database."
             );
         }
 
@@ -39,7 +39,7 @@ public class LocationServiceImpl implements LocationService {
     public Location getLocationById(Integer id) {
         return repository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException(
-                        "Aeropuerto por ID " + id + " no encontrada."));
+                        "Location with ID " + id + " not found."));
     }
 
     @Override
@@ -47,7 +47,7 @@ public class LocationServiceImpl implements LocationService {
 
         return repository.findLocationByCity(city.toLowerCase())
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Location por nombre ciudad " + city + " no encontrada."));
+                        "Location by city " + city + " not found."));
     }
 
     @Override
@@ -61,11 +61,15 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public <T> DeleteResponse<T> deleteLocationById(Location location) {
-        Location found = repository.findById(location.getIdLocation())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        location.getClass().getSimpleName() + " con ID " +
-                                location.getIdLocation() + " no encontrado"));
+    public <T> DeleteResponse<T> deleteLocation(Location location) {
+
+        Location found = this.getLocationById(location.getIdLocation());
+
+        if (!found.equals(location)){
+            throw new ResourceNotFoundException(
+                    "The location data does not match the database. Please check and try again."
+            );
+        }
 
         Location save = new Location();
         save.setCity(found.getCity());

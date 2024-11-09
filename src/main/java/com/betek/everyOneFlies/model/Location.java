@@ -32,7 +32,7 @@ public class Location {
 
     @Column(name = "CITY", nullable = false, length = 15)
     @NotBlank(message = "City is mandatory")
-    @Size(min = 3, max = 15, message = "City must be between 4 and 15 characters")
+    @Size(min = 3, max = 15, message = "City must be between 3 and 15 characters")
     private String city;
 
     @Column(name = "FECHA_INICIO_ALTA", nullable = false)

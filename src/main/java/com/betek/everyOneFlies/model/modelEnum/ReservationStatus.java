@@ -6,7 +6,6 @@ public enum ReservationStatus {
     CANCELLED,
     PAID,
     REFUNDED,
-    ON_HOLD,
     COMPLETED,
     NO_SHOW
 }

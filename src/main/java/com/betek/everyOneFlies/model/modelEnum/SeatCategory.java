@@ -1,8 +1,8 @@
 package com.betek.everyOneFlies.model.modelEnum;
 
 public enum SeatCategory {
-    ECONOMYC,
-    ECONOMYCPREMIUM,
+    ECONOMICAL,
+    ECONOMICAL_PREMIUM,
     BUSINESS,
     FIRST_CLASS;
 }

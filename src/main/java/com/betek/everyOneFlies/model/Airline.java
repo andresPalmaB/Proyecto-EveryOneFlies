@@ -29,8 +29,8 @@ public class Airline {
     @Column(name = "ACRONYM", nullable = false, length = 3)
     private String acronym;
 
-    public Airline(AirlineDTO airlineDTO) {
-        this.name = airlineDTO.name().toLowerCase();
-        this.acronym = airlineDTO.acronym().toLowerCase();
+    public Airline(String name, String acronym) {
+        this.name = name;
+        this.acronym = acronym;
     }
 }

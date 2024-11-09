@@ -100,7 +100,20 @@ public class Flight {
     }
 
     @PostPersist
-    public void initializeCode(){
+    public void initializeCode() {
         this.flightCode = this.airline.getAcronym().toLowerCase() + this.idFlight.intValue();
     }
+
+    @Override
+    public String toString() {
+        return  "Flight Code: " + flightCode + '\n' +
+                "Airline: " + airline.getName() + " (" + airline.getAcronym() + ")" + '\n' +
+                "Origin Airport: " + origin.getName() + ", de" + origin.getLocation().getCity() + " " + origin.getLocation().getCountry() + " (" + origin.getIataCode() + ")" + '\n' +
+                "Departure Date(yyyy/mm/dd): " + departureDate.toString() + '\n' +
+                "Departure Time(HH:MM): " + departureTime + '\n' +
+                "Destination Airport: " + destination.getName() + ", de" + destination.getLocation().getCity() + " " + destination.getLocation().getCountry() + " (" + destination.getIataCode() + ")" + '\n' +
+                "Arrival Date(yyyy/mm/dd): " + arrivalDate + '\n' +
+                "Arrival Time(HH:MM): " + arrivalTime;
+    }
 }
+

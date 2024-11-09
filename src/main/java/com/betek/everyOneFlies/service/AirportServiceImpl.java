@@ -29,12 +29,13 @@ public class AirportServiceImpl implements AirportService {
     @Override
     public Airport createAirport(AirportDTO airportDTO) {
 
-        //Se verifica que la location exista en el LocationRepository
         Location location = locationService.getLocationByCity(airportDTO.city());
 
         if (repository.findAirportByIataCode(airportDTO.iataCode().toLowerCase()).isPresent()){
             throw new ResourceNotFoundException(
-                    "El Aeropuerto con flightCode IATA " + airportDTO.iataCode() + " ya existe en la base de datos."
+                            "The Airport with IATA code " +
+                            airportDTO.iataCode() +
+                            " already exists in the database."
             );
         }
 
@@ -51,21 +52,21 @@ public class AirportServiceImpl implements AirportService {
     public Airport getAirportById(Integer id) {
         return repository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException(
-                        "Aeropuerto por ID " + id + " no encontrada."));
+                        "Airport with ID " + id + " not found."));
     }
 
     @Override
     public Airport getAirportByIataCode(AirportDTO airportDTO) {
         return repository.findAirportByIataCode(airportDTO.iataCode().toLowerCase())
                 .orElseThrow(()-> new ResourceNotFoundException(
-                        "Aeropuerto por CodigoIATA " + airportDTO.iataCode() + " no encontrada."));
+                        "Airport with IATA code " + airportDTO.iataCode() + " not found."));
     }
 
     @Override
     public Airport getAirportByName(AirportDTO airportDTO) {
         return repository.findAirportByName(airportDTO.name().toLowerCase())
                 .orElseThrow(()-> new ResourceNotFoundException(
-                        "Aeropuerto por Nombre " + airportDTO.name() + " no encontrada."));
+                        "Airport with name " + airportDTO.name() + " not found."));
     }
 
     @Override
@@ -92,11 +93,9 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     @Transactional
-    public Airport updateAirportByIataCode(Airport airport) {
+    public Airport updateAirport(Airport airport) {
 
-        Airport found = repository.findById(airport.getIdAirport())
-                .orElseThrow(()-> new ResourceNotFoundException(
-                        "Aeropuerto con flightCode " + airport.getIdAirport() + " no encontrada."));
+        Airport found = this.getAirportById(airport.getIdAirport());
 
         found.setName(airport.getName());
 
@@ -104,18 +103,21 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public <T> DeleteResponse<T> deleteAirportByIataCode(Airport airport) {
+    public <T> DeleteResponse<T> deleteAirport(Airport airport) {
 
-        Airport object = repository.findById(airport.getIdAirport())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        airport.getClass().getSimpleName() + " con ID " +
-                                airport.getIdAirport() + " no encontrado"));
+        Airport found = this.getAirportById(airport.getIdAirport());
 
-        Airport save = new Airport();
-        save.setName(object.getName());
+        if (!found.equals(airport)){
+            throw new ResourceNotFoundException(
+                    "The airport data does not match the database. Please check and try again."
+            );
+        }
+
+        Airport saved = new Airport();
+        saved.setName(found.getName());
 
         repository.delete(airport);
 
-        return new DeleteResponse<>(save.getClass().getSimpleName(), save.getName());
+        return new DeleteResponse<>(saved.getClass().getSimpleName(), saved.getName());
     }
 }

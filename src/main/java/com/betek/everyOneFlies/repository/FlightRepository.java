@@ -14,7 +14,7 @@ import java.util.Optional;
 @Repository
 public interface FlightRepository extends JpaRepository<Flight, Long> {
 
-    Optional<Flight> findFlightByFlightCode(java.lang.String flightCode);
+    Optional<Flight> findFlightByFlightCode(String flightCode);
 
     List<Flight> findFlightByDepartureDateAndOriginAndDestinationOrderByFlightCodeAsc(LocalDate departureDate,
                                                                                       Airport origin,
@@ -25,9 +25,9 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
                                                                                              Airport origin,
                                                                                              Airport destination);
 
-    boolean existsByAirlineAndOriginAndDestinationAndDepartureDateAndDepartureTime(Airline airline,
-                                                                                   Airport origin,
-                                                                                   Airport destination,
-                                                                                   LocalDate departureDate,
-                                                                                   LocalTime departureTime);
+    boolean existsFlightByAirlineAndOriginAndDestinationAndDepartureDateAndDepartureTime(Airline airline,
+                                                                                         Airport origin,
+                                                                                         Airport destination,
+                                                                                         LocalDate departureDate,
+                                                                                         LocalTime departureTime);
 }

@@ -22,7 +22,7 @@ public interface AirportService {
 
     List<Airport> getAirports();
 
-    Airport updateAirportByIataCode(Airport airport);
+    Airport updateAirport(Airport airport);
 
-    <T> DeleteResponse<T> deleteAirportByIataCode(Airport airport);
+    <T> DeleteResponse<T> deleteAirport(Airport airport);
 }
