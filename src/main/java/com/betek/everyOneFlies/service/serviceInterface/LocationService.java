@@ -18,5 +18,9 @@ public interface LocationService {
 
     List<Location> getLocations();
 
+    Location updateLocationDate(Location location);
+
+    Location updateLocationBasePrice(Location location);
+
     <T> DeleteResponse<T> deleteLocation(Location geoData);
 }

@@ -12,11 +12,11 @@ public interface AirportService {
 
     Airport getAirportById(Integer id);
 
-    Airport getAirportByIataCode(AirportDTO airportDTO);
+    Airport getAirportByIataCode(String iataCode);
 
-    Airport getAirportByName(AirportDTO airportDTO);
+    Airport getAirportByName(String name);
 
-    List<Airport> getAirportByCity(AirportDTO airportDTO);
+    List<Airport> getAirportByCity(String city);
 
     List<Airport> getAirportsByCountry(String country);
 

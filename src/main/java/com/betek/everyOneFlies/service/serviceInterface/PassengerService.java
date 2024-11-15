@@ -12,7 +12,7 @@ public interface PassengerService {
 
     Passenger getPassengerById(Long id);
 
-    List<Passenger> getPassengerByReserve(Reserve reserve);
+    Passenger getPassengerByReserve(Reserve reserve);
 
     Passenger updatePassenger(Passenger passenger);
 

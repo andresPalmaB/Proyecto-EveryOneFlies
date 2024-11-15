@@ -4,6 +4,7 @@ import com.betek.everyOneFlies.dto.dtoModel.SeatDTO;
 import com.betek.everyOneFlies.exception.ResourceNotFoundException;
 import com.betek.everyOneFlies.model.Flight;
 import com.betek.everyOneFlies.model.Seat;
+import com.betek.everyOneFlies.model.modelEnum.SeatCategory;
 import com.betek.everyOneFlies.repository.SeatRepository;
 import com.betek.everyOneFlies.service.serviceInterface.SeatService;
 import lombok.AllArgsConstructor;
@@ -26,8 +27,8 @@ public class SeatServiceImpl implements SeatService {
         repository.save(
                 new Seat(
                         flight,
-                        seatDTO.available(),
-                        seatDTO.seatCategory(),
+                        true,
+                        SeatCategory.valueOf(seatDTO.seatCategory()),
                         seatNumber
                 ));
     }
@@ -44,7 +45,7 @@ public class SeatServiceImpl implements SeatService {
     public List<Seat> getSeatAvailabilityInFlightBySeatType(SeatDTO seatDTO, Flight flight) {
         return repository.findSeatByFlightAndSeatCategoryAndAvailable(
                 flight,
-                seatDTO.seatCategory(),
+                SeatCategory.valueOf(seatDTO.seatCategory()),
                 true
         );
     }
@@ -63,7 +64,7 @@ public class SeatServiceImpl implements SeatService {
 
         Seat found = this.getSeatBySeatCode(seat.getSeatCode());
 
-        found.setAvailable(false);
+        found.setAvailable(!found.getAvailable());
 
         repository.save(found);
 

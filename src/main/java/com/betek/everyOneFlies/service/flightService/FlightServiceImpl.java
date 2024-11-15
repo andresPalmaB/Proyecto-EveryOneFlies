@@ -3,10 +3,10 @@ package com.betek.everyOneFlies.service.flightService;
 import com.betek.everyOneFlies.dto.DeleteResponse;
 import com.betek.everyOneFlies.dto.OutBoundRoute;
 import com.betek.everyOneFlies.dto.ReturnRoute;
-import com.betek.everyOneFlies.dto.dtoModel.FlightCostDTO;
 import com.betek.everyOneFlies.dto.dtoModel.FlightDTO;
 import com.betek.everyOneFlies.dto.dtoModel.FlightSeatSoldDTO;
 import com.betek.everyOneFlies.dto.dtoModel.SeatDTO;
+import com.betek.everyOneFlies.exception.ExistingResourceException;
 import com.betek.everyOneFlies.exception.ResourceNotFoundException;
 import com.betek.everyOneFlies.model.Airline;
 import com.betek.everyOneFlies.model.Airport;
@@ -57,18 +57,22 @@ public class FlightServiceImpl implements FlightService {
     @Override
     public Flight createFlight(FlightDTO flightDTO) {
 
-        Airline airline = airlineService.getAirlineByName(flightDTO.airlineDTO());
+        Airline airline = airlineService.getAirlineByName(flightDTO.airlineName());
 
-        Airport originAirport = airportService.getAirportByIataCode(flightDTO.originAirportDTO());
+        Airport originAirport = airportService.getAirportByIataCode(flightDTO.iataCodeOriginAirport());
 
-        Airport destinationAirport = airportService.getAirportByIataCode(flightDTO.destinationAirportDTO());
+        Airport destinationAirport = airportService.getAirportByIataCode(flightDTO.iataCodeDestinationAirport());
 
-        if (doesFlightExist(airline, originAirport, destinationAirport, flightDTO.departureDate(), flightDTO.departureTime())) {
-            throw new ResourceNotFoundException("Flight already exist.");
+        if (doesFlightExist(
+                airline,
+                originAirport,
+                destinationAirport,
+                flightDTO.departureDate(),
+                flightDTO.departureTime())) {
+            throw new ExistingResourceException("Flight already exist.");
         }
 
-        Flight flight = repository.save(
-                new Flight(
+        Flight flight = new Flight(
                         airline,
                         originAirport,
                         destinationAirport,
@@ -80,8 +84,10 @@ public class FlightServiceImpl implements FlightService {
                         flightDTO.premiumEconomyCounter(),
                         flightDTO.businessCounter(),
                         flightDTO.firstClassCounter()
-                )
         );
+
+        flight.setFlightCode("TEMP");
+        flight = repository.save(flight);
 
         int seatNumber = 1;
         int economyLimit = flight.getEconomyCounter();
@@ -105,8 +111,7 @@ public class FlightServiceImpl implements FlightService {
 
             seatService.createSeat(
                     new SeatDTO(flight.getFlightCode(),
-                            true,
-                            seatCategory),
+                            seatCategory.toString()),
                     seatNumber,
                     flight
             );
@@ -137,19 +142,19 @@ public class FlightServiceImpl implements FlightService {
     @Override
     public List<Flight> getRouteByDate(OutBoundRoute route) {
         return repository.findFlightByDepartureDateAndOriginAndDestinationOrderByFlightCodeAsc(
-                route.departureDate(),
-                airportService.getAirportByIataCode(route.aeropuertoOrigenDTO()),
-                airportService.getAirportByIataCode(route.aeropuertoDestinoDTO())
+                LocalDate.parse(route.departureDate()),
+                airportService.getAirportByIataCode(route.iataCodeOriginAirport()),
+                airportService.getAirportByIataCode(route.iataCodeDestinationAirport())
         );
     }
 
     @Override
     public List<Flight> getRutaByRangoFechas(ReturnRoute route) {
         return repository.findFlightByDepartureDateBetweenAndOriginAndDestinationOrderByFlightCodeAsc(
-                route.departureDate(),
-                route.returnDate(),
-                airportService.getAirportByIataCode(route.aeropuertoOrigenDTO()),
-                airportService.getAirportByIataCode(route.aeropuertoDestinoDTO())
+                LocalDate.parse(route.departureDate()),
+                LocalDate.parse(route.returnDate()),
+                airportService.getAirportByIataCode(route.iataCodeOriginAirport()),
+                airportService.getAirportByIataCode(route.iataCodeDestinationAirport())
         );
     }
 
@@ -170,13 +175,13 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public Double getFlightCost(FlightCostDTO flightCostDTO) {
+    public Double getFlightCost(SeatDTO seatDTO) {
 
-        Flight flight = this.getFlightByFlightCode(flightCostDTO.flightCode());
+        Flight flight = this.getFlightByFlightCode(seatDTO.flightCode());
 
         Airport airport = flight.getDestination();
 
-        return FlightCalculateCost.Calculate(flightCostDTO.seatCategory(), airport.getLocation(), flight.getDepartureDate(), flight);
+        return FlightCalculateCost.Calculate(SeatCategory.valueOf(seatDTO.seatCategory()), airport.getLocation(), flight.getDepartureDate(), flight);
     }
 
     @Override
@@ -198,7 +203,7 @@ public class FlightServiceImpl implements FlightService {
     @Override
     public Flight updateSeatsSoldFlight(FlightSeatSoldDTO seatsSoldDTO) {
 
-        Flight found = this.getFlightByFlightCode(seatsSoldDTO.flightCode());
+        Flight found = this.getFlightByFlightCode(seatsSoldDTO.flightCode().toLowerCase());
 
         validateSale(seatsSoldDTO, found);
 

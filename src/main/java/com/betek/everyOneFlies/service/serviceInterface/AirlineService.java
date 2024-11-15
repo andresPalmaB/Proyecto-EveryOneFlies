@@ -14,7 +14,7 @@ public interface AirlineService {
 
     List<Airline> getAirlines();
 
-    Airline getAirlineByName(AirlineDTO airlineDTO);
+    Airline getAirlineByName(String name);
 
     Airline updateAirline(Airline airline);
 

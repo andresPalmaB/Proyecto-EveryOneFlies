@@ -4,3 +4,6 @@ server:
 Spring:
   profiles:
     active: dev
+  jackson:
+    date-format: yyyy-MM-DD HH:mm
+    time-zone: UTC

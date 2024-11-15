@@ -2,6 +2,7 @@ package com.betek.everyOneFlies.service;
 
 import com.betek.everyOneFlies.dto.DeleteResponse;
 import com.betek.everyOneFlies.dto.dtoModel.AirlineDTO;
+import com.betek.everyOneFlies.exception.ExistingResourceException;
 import com.betek.everyOneFlies.exception.ResourceNotFoundException;
 import com.betek.everyOneFlies.model.Airline;
 import com.betek.everyOneFlies.repository.AirlineRepository;
@@ -24,8 +25,14 @@ public class AirlineServiceImpl implements AirlineService {
     public Airline createAirline(AirlineDTO airlineDTO) {
 
         if (repository.findAirlineByName(airlineDTO.name().toLowerCase()).isPresent()){
-            throw new ResourceNotFoundException(
+            throw new ExistingResourceException(
                     "The Airline whit the name " + airlineDTO.name() + " already exists in the database."
+            );
+        }
+
+        if (repository.findAirlineByAcronym(airlineDTO.acronym().toLowerCase()).isPresent()){
+            throw new ExistingResourceException(
+                    "The Airline whit the acronym " + airlineDTO.acronym() + " already exists in the database."
             );
         }
 
@@ -53,11 +60,11 @@ public class AirlineServiceImpl implements AirlineService {
     }
 
     @Override
-    public Airline getAirlineByName(AirlineDTO airlineDTO) {
-        return repository.findAirlineByName(airlineDTO.name().toLowerCase())
+    public Airline getAirlineByName(String name) {
+        return repository.findAirlineByName(name.toLowerCase())
                 .orElseThrow(
                         ()-> new ResourceNotFoundException(
-                        "Airline with the name " + airlineDTO.name() + " not found."
+                        "Airline with the name " + name + " not found."
                         )
                 );
     }

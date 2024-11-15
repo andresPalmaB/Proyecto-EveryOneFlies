@@ -8,6 +8,5 @@ import com.betek.everyOneFlies.model.Reserve;
 import java.time.LocalDate;
 
 public record TicketDTO(Passenger passenger,
-                        LocalDate issueDate,
-                        TicketStatus ticketStatus) {
+                        LocalDate issueDate) {
 }

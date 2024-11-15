@@ -3,10 +3,12 @@ package com.betek.everyOneFlies.service;
 
 import com.betek.everyOneFlies.dto.DeleteResponse;
 import com.betek.everyOneFlies.dto.dtoModel.AirportDTO;
+import com.betek.everyOneFlies.exception.ExistingResourceException;
 import com.betek.everyOneFlies.exception.ResourceNotFoundException;
 import com.betek.everyOneFlies.model.Airport;
 import com.betek.everyOneFlies.model.Location;
 import com.betek.everyOneFlies.repository.AirportRepository;
+import com.betek.everyOneFlies.repository.LocationRepository;
 import com.betek.everyOneFlies.service.serviceInterface.AirportService;
 import com.betek.everyOneFlies.service.serviceInterface.LocationService;
 import lombok.AllArgsConstructor;
@@ -32,10 +34,14 @@ public class AirportServiceImpl implements AirportService {
         Location location = locationService.getLocationByCity(airportDTO.city());
 
         if (repository.findAirportByIataCode(airportDTO.iataCode().toLowerCase()).isPresent()){
-            throw new ResourceNotFoundException(
-                            "The Airport with IATA code " +
-                            airportDTO.iataCode() +
-                            " already exists in the database."
+            throw new ExistingResourceException(
+                    "The Airport with IATA code " + airportDTO.iataCode() + " already exists in the database."
+            );
+        }
+
+        if (repository.findAirportByName(airportDTO.name().toLowerCase()).isPresent()){
+            throw new ExistingResourceException(
+                    "The Airport with name " + airportDTO.name() + " already exists in the database."
             );
         }
 
@@ -56,23 +62,23 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public Airport getAirportByIataCode(AirportDTO airportDTO) {
-        return repository.findAirportByIataCode(airportDTO.iataCode().toLowerCase())
+    public Airport getAirportByIataCode(String iataCode) {
+        return repository.findAirportByIataCode(iataCode.toLowerCase())
                 .orElseThrow(()-> new ResourceNotFoundException(
-                        "Airport with IATA code " + airportDTO.iataCode() + " not found."));
+                        "Airport with IATA code " + iataCode + " not found."));
     }
 
     @Override
-    public Airport getAirportByName(AirportDTO airportDTO) {
-        return repository.findAirportByName(airportDTO.name().toLowerCase())
+    public Airport getAirportByName(String name) {
+        return repository.findAirportByName(name.toLowerCase())
                 .orElseThrow(()-> new ResourceNotFoundException(
-                        "Airport with name " + airportDTO.name() + " not found."));
+                        "Airport with name " + name + " not found."));
     }
 
     @Override
-    public List<Airport> getAirportByCity(AirportDTO airportDTO) {
+    public List<Airport> getAirportByCity(String city) {
 
-        Location location = locationService.getLocationByCity(airportDTO.city().toLowerCase());
+        Location location = locationService.getLocationByCity(city.toLowerCase());
 
         return repository.findAirportByLocation(location);
     }

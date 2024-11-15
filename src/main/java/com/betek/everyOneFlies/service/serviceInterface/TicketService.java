@@ -1,15 +1,18 @@
 package com.betek.everyOneFlies.service.serviceInterface;
 
+import com.betek.everyOneFlies.model.Passenger;
 import com.betek.everyOneFlies.model.Ticket;
 import com.betek.everyOneFlies.dto.dtoModel.TicketDTO;
 
+import java.time.LocalDateTime;
+
 public interface TicketService {
 
-    Ticket createTicket(TicketDTO ticketDTO);
+    void createTicket(TicketDTO ticketDTO);
 
-    Ticket generateTicketPdf(Long ticketId);
+    byte[] generateAndValidateTicket(Long ticketId, LocalDateTime now);
 
-    Ticket updateTicket(Ticket ticket);
+    Ticket getTicketByPassenger(Passenger passenger);
 
     Ticket getTicketById(Long idticket);
 }

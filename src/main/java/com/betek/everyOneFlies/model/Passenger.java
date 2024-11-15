@@ -22,7 +22,7 @@ public class Passenger {
     private Long idPassenger;
 
     @ManyToOne
-    @JoinColumn(name = "ID_RESERVE", referencedColumnName = "ID_RESERVER", nullable = false)
+    @JoinColumn(name = "ID_RESERVACION", referencedColumnName = "ID_RESERVACION", nullable = false)
     @NotNull(message = "Reserve is mandatory")
     private Reserve reserve;
 
@@ -46,7 +46,7 @@ public class Passenger {
     private String email;
 
     @NotBlank(message = "Phone number is mandatory")
-    @Pattern(regexp = "^[0-9]{10,15}$", message = "Phone number must be between 10 and 15 digits")
+    @Pattern(regexp = "^\\+\\d{1,3}-\\d{7,15}$", message = "must have the format +123-xxxxxxxx (country code of up to three digits followed by a number of 7 to 15 digits)")
     @Column(name = "PHONE", nullable = false)
     private String phone;
 

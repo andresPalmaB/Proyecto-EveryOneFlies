@@ -11,8 +11,8 @@ import java.util.Optional;
 @Repository
 public interface PassengerRepository extends JpaRepository<Passenger, Long> {
 
-    List<Passenger> findPassengerByReserve(Reserve reserve);
+    Optional<Passenger> findPassengerByReserve(Reserve reserve);
 
-    void deleteAllByReserve(Reserve reserve);
+    void deletePassengerByReserve(Reserve reserve);
 
 }

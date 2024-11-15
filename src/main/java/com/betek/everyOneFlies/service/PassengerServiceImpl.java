@@ -43,8 +43,11 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    public List<Passenger> getPassengerByReserve(Reserve reserve){
-        return repository.findPassengerByReserve(reserve);
+    public Passenger getPassengerByReserve(Reserve reserve){
+        return repository.findPassengerByReserve(reserve).orElseThrow(
+                () -> new ResourceNotFoundException(
+                        "Passenger with reserve " + reserve + " not found.")
+        );
     }
 
     @Override
@@ -63,7 +66,7 @@ public class PassengerServiceImpl implements PassengerService {
     @Override
     public void deletePassenger(Reserve reserve) {
 
-        repository.deleteAllByReserve(reserve);
+        repository.deletePassengerByReserve(reserve);
 
     }
 }
