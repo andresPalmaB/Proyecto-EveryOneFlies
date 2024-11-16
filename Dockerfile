@@ -11,4 +11,4 @@ COPY . /app
 RUN chmod +x ./mvnw && ./mvnw -B -DskipTests clean package
 
 # Comando para ejecutar el JAR generado
-CMD ["java", "-jar", "target/your-app.jar"]
+CMD ["java", "-jar", "target/everyOneFlies-0.0.1-SNAPSHOT.jar"]
