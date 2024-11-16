@@ -8,10 +8,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class EveryOneFliesApplication {
 
 	public static void main(String[] args) {
-		Dotenv dotenv = Dotenv.configure().load();
-		System.setProperty("DB_USERNAME", dotenv.get("DB_USERNAME"));
-		System.setProperty("DB_PASSWORD", dotenv.get("DB_PASSWORD"));
-
+		if (System.getenv("RAILWAY_ENVIRONMENT") == null) {
+			Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
+			System.setProperty("DB_USERNAME", dotenv.get("DB_USERNAME"));
+			System.setProperty("DB_PASSWORD", dotenv.get("DB_PASSWORD"));
+		}
 		SpringApplication.run(EveryOneFliesApplication.class, args);
 	}
 
