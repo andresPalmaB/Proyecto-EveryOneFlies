@@ -4,6 +4,12 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
+  api-docs:
+    path: /doc/swagger/json
+    enabled: true
+  swagger-ui:
+    path: /doc/index.html
+    enabled: true
 
   jpa:
     hibernate:
